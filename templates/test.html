@@ -1,0 +1,67 @@
+{% block content %}
+{% load static %}
+
+{% include 'header.html' %}
+
+<!-- Transaction Upload Section -->
+<section class="intro-single">
+  <div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="title-single-box text-center">
+                <h1 class="title-single">Perform Bank Transaction</h1>
+                <p class="mb-4">Upload your transaction CSV file to securely process the transfer from one account to another. Our system will verify the transaction for security.</p>
+                <form action="addfile" enctype="multipart/form-data" method="post" class="shadow p-4 rounded">
+                    {% csrf_token %}
+                    <div class="row justify-content-center">
+                        <h5 style="color:red" class="mb-3">{{success}}</h5>
+                        <div class="col-md-8 mb-3">
+                            <div class="form-group">
+                                <label for="file" class="form-label">Select Transaction File (CSV)</label>
+                                <input type="file" name="file" id="file" class="form-control" accept=".csv" required>
+                                <small class="form-text text-muted">Please upload a CSV file containing transaction details.</small>
+                            </div>
+                        </div>
+                        <div class="col-md-8 text-center">
+                            <button type="submit" class="btn btn-primary btn-lg">Process Transaction</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transaction Result -->
+    {% if result is not None %}
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-6">
+            <div class="alert {% if result == 0 %}alert-warning{% else %}alert-info{% endif %} text-center" role="alert">
+                <h4 class="alert-heading">Transaction Status</h4>
+                {% if result == 0 %}
+                <p class="mb-0">Fraud Detected: Transaction has been flagged for security review.</p>
+                {% elif result == 1 %}
+                <p class="mb-0">Transaction Approved: Your transfer has been processed successfully.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+</section>
+
+<script>
+{% if result is not None %}
+window.onload = function() {
+    {% if result == 0 %}
+    alert("Fraud Detected: Transaction has been flagged for security review.");
+    {% elif result == 1 %}
+    alert("Transaction Approved: Your transfer has been processed successfully.");
+    {% endif %}
+}
+{% endif %}
+</script>
+
+{% include 'footer.html' %}
+
+{% endblock %}
