@@ -1,0 +1,151 @@
+{% block content %}
+{% load static %}
+
+{% include 'header.html' %}
+
+ <!--/ Intro Single star /-->
+ <section class="intro-single">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 col-lg-8">
+          <div class="title-single-box">
+            <h1 class="title-single">Review Transaction</h1>
+            <p class="color-text-a">Review and decide on this flagged transaction</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+  <!--/ Intro Single End /-->
+
+    <!--/ Review Transaction /-->
+    <section class="contact">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12 section-t8">
+              <div class="row">
+                <div class="col-md-8 mx-auto">
+                  <div class="card">
+                    <div class="card-header bg-warning text-dark">
+                      <h4 class="mb-0"><i class="fa fa-search"></i> Transaction Review #{{ transaction.id }}</h4>
+                    </div>
+                    <div class="card-body">
+                      <div class="alert alert-warning">
+                        <i class="fa fa-exclamation-triangle"></i>
+                        <strong>Flagged as Fraudulent:</strong> This transaction has been automatically flagged by our fraud detection system.
+                      </div>
+
+                      <div class="row">
+                        <div class="col-md-12">
+                          <h5><i class="fa fa-database"></i> Transaction Data:</h5>
+                          <div class="json-data-container mb-4">
+                            <pre class="json-data">{{ transaction.data }}</pre>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div class="card border-info">
+                            <div class="card-body text-center">
+                              <h5 class="card-title text-info"><i class="fa fa-check-circle"></i> Approve Transaction</h5>
+                              <p class="card-text">Mark this transaction as legitimate and allow it to proceed.</p>
+                              <form method="post" class="d-inline">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="approve">
+                                <div class="form-group">
+                                  <label for="review_notes">Review Notes (Optional):</label>
+                                  <textarea name="review_notes" class="form-control" rows="3" placeholder="Add any notes about this approval..."></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-success btn-lg">
+                                  <i class="fa fa-check"></i> Approve Transaction
+                                </button>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="card border-danger">
+                            <div class="card-body text-center">
+                              <h5 class="card-title text-danger"><i class="fa fa-ban"></i> Block Transaction</h5>
+                              <p class="card-text">Block this transaction as fraudulent and prevent it from proceeding.</p>
+                              <form method="post" class="d-inline">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="block">
+                                <div class="form-group">
+                                  <label for="review_notes_block">Review Notes (Required):</label>
+                                  <textarea name="review_notes" class="form-control" rows="3" placeholder="Explain why this transaction is being blocked..." required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-danger btn-lg">
+                                  <i class="fa fa-ban"></i> Block Transaction
+                                </button>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card-footer text-center">
+                      <a href="{% url 'staff_dashboard' %}" class="btn btn-secondary">
+                        <i class="fa fa-arrow-left"></i> Back to Dashboard
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!--/ Review Transaction End /-->
+
+<style>
+.json-data-container {
+  max-height: 300px;
+  overflow: auto;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  background-color: #f8f9fa;
+}
+
+.json-data {
+  margin: 0;
+  padding: 15px;
+  font-size: 12px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.card {
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.card-header {
+  border-radius: 10px 10px 0 0 !important;
+  border: none;
+  font-weight: 600;
+}
+
+.btn-lg {
+  padding: 12px 30px;
+  font-size: 1.1em;
+}
+
+.border-info {
+  border-color: #17a2b8 !important;
+}
+
+.border-danger {
+  border-color: #dc3545 !important;
+}
+</style>
+
+{% include 'footer.html' %}
+
+{% endblock %}

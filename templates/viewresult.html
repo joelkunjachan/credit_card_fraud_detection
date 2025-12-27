@@ -1,0 +1,195 @@
+{% block content %}
+{% load static %}
+
+{% include 'header.html' %}
+
+ <!--/ Intro Single star /-->
+ <section class="intro-single">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 col-lg-8">
+          <div class="title-single-box">
+            {% if request.session.admin %}
+            <h1 class="title-single">Fraudulent Transactions</h1>
+            <p class="color-text-a">Review transactions flagged as potentially fraudulent</p>
+            {% else %}
+            <h1 class="title-single">Transaction History</h1>
+            <p class="color-text-a">View all your transaction fraud detection results</p>
+            {% endif %}
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+  <!--/ Intro Single End /-->
+
+    <!--/ Transaction History Section /-->
+    <section class="contact">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12 section-t8">
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="card">
+                    <div class="card-header bg-primary text-white">
+                      <h4 class="mb-0"><i class="fa fa-history"></i> Your Transaction Records</h4>
+                    </div>
+                    <div class="card-body">
+                      {% if result %}
+                      <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                          <thead class="thead-dark">
+                            <tr>
+                              <th scope="col" class="text-center">#</th>
+                              <th scope="col">Transaction Data</th>
+                              <th scope="col" class="text-center">Status</th>
+                              <th scope="col" class="text-center">Review Status</th>
+                              <th scope="col">Details</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {% for i in result %}
+                            <tr>
+                              <td class="text-center font-weight-bold">{{ forloop.counter }}</td>
+                              <td>
+                                <div class="json-data-container">
+                                  <pre class="json-data">{{ i.data }}</pre>
+                                </div>
+                              </td>
+                              <td class="text-center">
+                                {% if i.status == 'approved' %}
+                                  <span class="badge badge-success badge-lg">
+                                    <i class="fa fa-check-circle"></i> Successful
+                                  </span>
+                                {% elif i.result == "1" %}
+                                  <span class="badge badge-success badge-lg">
+                                    <i class="fa fa-check-circle"></i> Successful
+                                  </span>
+                                {% elif i.result == "0" %}
+                                  <span class="badge badge-warning badge-lg">
+                                    <i class="fa fa-shield"></i> Security Review
+                                  </span>
+                                {% endif %}
+                              </td>
+                              <td class="text-center">
+                                {% if i.status == 'approved' or i.result == "1" %}
+                                  <span class="text-muted">-</span>
+                                {% elif i.status == 'pending' %}
+                                  <span class="badge badge-secondary badge-sm">
+                                    <i class="fa fa-clock"></i> Under Review
+                                  </span>
+                                {% elif i.status == 'blocked' %}
+                                  <span class="badge badge-danger badge-sm">
+                                    <i class="fa fa-ban"></i> Blocked
+                                  </span>
+                                {% else %}
+                                  <span class="badge badge-info badge-sm">
+                                    <i class="fa fa-question"></i> Unknown
+                                  </span>
+                                {% endif %}
+                              </td>
+                              <td>
+                                {% if i.status == 'blocked' and i.staff_review %}
+                                  <div class="alert alert-danger alert-sm mb-0">
+                                    <small><strong>Reason:</strong> {{ i.staff_review }}</small>
+                                  </div>
+                                {% elif i.status == 'approved' and i.staff_review %}
+                                  <div class="alert alert-success alert-sm mb-0">
+                                    <small><strong>Note:</strong> {{ i.staff_review }}</small>
+                                  </div>
+                                {% else %}
+                                  <span class="text-muted">-</span>
+                                {% endif %}
+                              </td>
+                            </tr>
+                            {% endfor %}
+                          </tbody>
+                        </table>
+                      </div>
+                      {% else %}
+                      <div class="text-center py-5">
+                        <i class="fa fa-inbox fa-3x text-muted mb-3"></i>
+                        <h4 class="text-muted">No Transactions Found</h4>
+                        <p class="text-muted">You haven't uploaded any transactions yet. Start by uploading a CSV file to check for fraud.</p>
+                        <a href="{% url 'test' %}" class="btn btn-primary">
+                          <i class="fa fa-upload"></i> Upload Transaction
+                        </a>
+                      </div>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!--/ Transaction History End /-->
+
+<style>
+.json-data-container {
+  max-height: 200px;
+  overflow: auto;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  background-color: #f8f9fa;
+}
+
+.json-data {
+  margin: 0;
+  padding: 10px;
+  font-size: 12px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.badge-lg {
+  font-size: 0.9em;
+  padding: 8px 12px;
+}
+
+.badge-sm {
+  font-size: 0.8em;
+  padding: 4px 8px;
+}
+
+.table-responsive {
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.card {
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.card-header {
+  border-radius: 10px 10px 0 0 !important;
+  border: none;
+}
+
+.thead-dark th {
+  border: none;
+  font-weight: 600;
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(0,123,255,0.05);
+}
+
+.alert-sm {
+  padding: 0.25rem 0.5rem;
+  margin-bottom: 0;
+  border-radius: 0.2rem;
+  font-size: 0.875em;
+}
+</style>
+
+{% include 'footer.html' %}
+
+{% endblock %}
